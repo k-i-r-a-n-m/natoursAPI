@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const slugify = require('slugify');
+const User = require('./userModel')
 const tourSchema = new mongoose.Schema(
   {
     name: {
@@ -107,7 +108,8 @@ const tourSchema = new mongoose.Schema(
         description: String,
         day: Number
       }
-    ]
+    ],
+    guides:Array
   },
   {
     toJSON: { virtuals: true },
@@ -121,11 +123,17 @@ tourSchema.virtual('durationWeeks').get(function() {
 
 // DOCUMENT MIDDLEWARE
 
-// tourSchema.pre('save', function () {
-//   this.name = slugify(this.name, { lower: true })
-//   console.log('sluging')
-// })
+tourSchema.pre('save', function () {
+  this.name = slugify(this.name, { lower: true })
+  
+})
 
+// embedding the guides document into the tours document
+tourSchema.pre('save', async function (next) {
+  const guidesPromsies = this.guides.map(async id => await User.findById(id))
+  this.guides = await Promise.all(guidesPromsies)
+  next()
+})
 // tourSchema.post('save', function () {
 //   console.log("doc..has been saved")
 
@@ -137,14 +145,15 @@ tourSchema.virtual('durationWeeks').get(function() {
 
 // QUERY MIDDLEWARE
 
-// tourSchema.pre(/^find/, function() {
-//   this.find({ secretTour: {$ne:true} });
-//   this.start = Date.now()
-// });
-// tourSchema.post(/^find/, function() {
-//   console.log(`query takes ${ Date.now() - this.start } sec`)
+tourSchema.pre(/^find/, function() {
+  this.find({ secretTour: {$ne:true} });
+  this.start = Date.now()
+});
 
-// });
+tourSchema.post(/^find/, function() {
+  console.log(`query takes ${ Date.now() - this.start } sec`)
+
+});
 
 // Aggregate MIDDLEWARE
 
