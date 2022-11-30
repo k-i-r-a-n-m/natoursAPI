@@ -109,7 +109,12 @@ const tourSchema = new mongoose.Schema(
         day: Number
       }
     ],
-    guides:Array
+    guides: [
+      {
+        type: mongoose.Schema.ObjectId,
+        ref:'User'
+      }
+    ]
   },
   {
     toJSON: { virtuals: true },
@@ -129,11 +134,14 @@ tourSchema.pre('save', function () {
 })
 
 // embedding the guides document into the tours document
-tourSchema.pre('save', async function (next) {
-  const guidesPromsies = this.guides.map(async id => await User.findById(id))
-  this.guides = await Promise.all(guidesPromsies)
-  next()
-})
+
+// tourSchema.pre('save', async function (next) {
+//   const guidesPromsies = this.guides.map(async id => await User.findById(id))
+//   this.guides = await Promise.all(guidesPromsies)
+//   next()
+// })
+
+
 // tourSchema.post('save', function () {
 //   console.log("doc..has been saved")
 
