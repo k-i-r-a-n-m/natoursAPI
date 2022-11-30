@@ -33,4 +33,16 @@ const reveiwSchema = new mongoose.Schema(
   }
 );
 
+
+reveiwSchema.pre(/^find/, function() {
+  this.populate({
+    path: 'tour',
+    select: '-guides _id name'
+  }).populate({
+    path: 'user',
+    select: 'name photo'
+  });
+});
+
+
 module.exports = mongoose.model('Review', reveiwSchema);
