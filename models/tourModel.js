@@ -158,6 +158,13 @@ tourSchema.pre(/^find/, function() {
   this.start = Date.now()
 });
 
+tourSchema.pre(/^find/, function() {
+  this.populate({
+    path: 'guides',
+    select:'-__v -passwrodChangedAt'
+  })
+});
+
 tourSchema.post(/^find/, function() {
   console.log(`query takes ${ Date.now() - this.start } sec`)
 
