@@ -13,6 +13,7 @@ exports.aliasTopTours = (req, res, next) => {
 exports.getAllTours = catchAsync(async (req, res, next) => {
   //Build QUERY
   //1A.filtering
+  console.log(req)
   // console.log(req.query);
   const queryObj = { ...req.query };
   const excludedFields = ['page', 'sort', 'limit', 'fields'];

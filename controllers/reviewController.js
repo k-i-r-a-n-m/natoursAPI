@@ -18,6 +18,11 @@ exports.getAllReview = catchAsync(async (req, res, next) => {
 });
 
 exports.createReview = catchAsync(async (req, res, next) => {
+  //The TOUR ID from url parameter
+  //The USER ID from req object (which is set by the protect middleware from authController)
+  if(!req.body.tour) req.body.tour = req.params.tourId
+  if (!req.body.user) req.body.user = req.user.id
+  
   const newReview = await Review.create(req.body);
   // console.log(req.body);
   res.status(201).json({
