@@ -31,4 +31,6 @@ router
   .patch(userController.updateUser)
   .delete(userController.deleteUser);
 
+// router.delete('/:id',userController.deleteUser);
+
 module.exports = router;
